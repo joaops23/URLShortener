@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\shortenerModel as shortener;
+use App\Models\linkStore;
+
 
 
 
@@ -23,14 +25,55 @@ class shortenerController extends Controller
         $this->url = $newUrl;
     }
 
+    // método de armazenamento de dados
+    public function store($URIS = []) {        
+        $db = new linkStore();
+
+
+        $store = $db::create([
+            'urlorig' =>$URIS['oldUrl'],
+            'urlnew' =>$URIS['newUrl']
+        ]);
+
+        return $store;
+    }
+
     // função controller que recebe os dados para encurtamento e envia para o modelo de encurtamento.
     public function shortener(Request  $request){
-        $db = new shortener();
+        $shortener = new shortener();
         $urlOld = htmlSpecialChars($request->url);
-        
-        $teste = $db->short($urlOld);
+        $db = new linkStore();
 
-        return $teste;
+        $URIS = [];
+        array_push($URIS, $shortener->short($urlOld));
+
+        //valida se link original já existe 
+        $validate = $db->where("urlorig", $URIS[0]['oldUrl'])->get('urlnew');
+
+        /*
+        $store = $this->store($URIS[0]);
+
+        if(!empty($store['id'])){
+            
+        }
+        return response()->json([
+            'message' => "Adicionado com sucesso!"
+        ], 201);
+        */
+
+        return $validate;
+    }
+
+
+    public function list(){
+
+        $db = new linkStore();
+
+        $list = $db->get(['urlorig', 'urlnew']);
+
+        return response()->json([
+            $list
+        ], 200);
     }
 
 }

@@ -1,5 +1,6 @@
 <?php
 
+//Model responsável pela lógica utilizada para gerar um link original para converter a URL
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,12 +15,12 @@ class shortenerModel extends Model
     
     // método para converter a url e armazenar os dados
     public function short($url){
-        $basePath = $_SERVER['DOCUMENT_ROOT'];
+        //$basePath = $_SERVER['DOCUMENT_ROOT'];
         
         $bytes = random_bytes(10);
         $queryString = (bin2hex($bytes));
 
-        $urlFull = $basePath . DIRECTORY_SEPARATOR . $queryString;
+        $urlFull = $queryString;
 
         $resp = ['oldUrl' => $url, 'newUrl' => $urlFull];
 

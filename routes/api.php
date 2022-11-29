@@ -9,5 +9,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/shortener', [shortenerController::class, 'shortener']);
+Route::post('/shortener', [shortenerController::class, 'shortener']);
 
+Route::get('/listAll', [shortenerController::class, 'list']);
