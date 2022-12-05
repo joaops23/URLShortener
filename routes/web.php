@@ -13,4 +13,3 @@ use App\Http\Controllers\Controller;
 |
 */
 
-Route::get('/', "shortenerController@teste");

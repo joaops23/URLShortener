@@ -50,18 +50,28 @@ class shortenerController extends Controller
         //valida se link original já existe 
         $validate = $db->where("urlorig", $URIS[0]['oldUrl'])->get('urlnew');
 
-        /*
-        $store = $this->store($URIS[0]);
+        
+        #validação para cadastro
+        if($validate->count() == 0){
+            $store = $this->store($URIS[0]);
 
-        if(!empty($store['id'])){
-            
+            #erro no cadastro
+            if(empty($store['id'])){
+                return response()->json([
+                    'message' => "Algo deu errado, conferir link e reenviar"
+                ], 406);                
+            }
+
+            #retorno esperado
+            return response()->json([
+                'message' => "Adicionado com sucesso!"
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'Link já cadastrado',
+                'url' => $validate[0]['urlnew']
+            ], 226);
         }
-        return response()->json([
-            'message' => "Adicionado com sucesso!"
-        ], 201);
-        */
-
-        return $validate;
     }
 
 
@@ -71,9 +81,34 @@ class shortenerController extends Controller
 
         $list = $db->get(['urlorig', 'urlnew']);
 
+        $formatList = [];
+        foreach($list as $URL){
+            array_push($formatList, [$URL['urlorig'] => $this->fullPath($URL['urlnew'])]);
+        }
+        
         return response()->json([
-            $list
+            $formatList
         ], 200);
+    }
+
+    public function fullPath($queryString){
+        //$basePath = $_SERVER['DOCUMENT_ROOT'];
+        $basePath = $_SERVER['HTTP_HOST'] . '/api/';
+        $fullPath = $basePath . trim($queryString);
+
+        return $fullPath;
+    }
+
+    public function search($queryString){
+
+        $qs = trim($queryString);
+
+        $db = new linkStore();
+
+        $search = $db->where("urlnew", $qs)->get('urlorig');
+
+        return redirect("http://" . $search[0]['urlorig']);
+
     }
 
 }
