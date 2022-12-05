@@ -2,6 +2,9 @@
 
 Encurtador de URL
 
+### Link do desafio
+<a href='https://github.com/backend-br/desafios/blob/master/01-Easy/EncurtadorDeURL/README.md' target='_blank'>Encurtador de URLs</a>
+
 ## Tecnologias utilizadas
 
 > PHP 7.4.30
@@ -46,22 +49,27 @@ Body
 
 <br>
 
-## /{$url} [GET]
+## /listAll [GET]
 
-Rota para acessar rota encurtada
+Rota para listagem de todas todos os link encurtados, trazendo o link encurtado seguido do original.
 
-- <b>Response 200 </b> (application/json)
-
-Headers
 
 ~~~HTTP
-Content-Type: application/json
+[
+    {
+        "backendbrasil.com.br": "localhost:8000/api/61495bd46004db239cd0"
+    }
+    ...
+]
 ~~~
+<br>
 
-Body
-~~~Javascript
-{
-    newUrl: "https://localhost:8000/abcde123";
-}
+## /{$url} [GET]
+
+Rota para acessar URL encurtada
+
+o Retorno é o redirecionamento para a URL original.
+
+~~~PHP
+    return redirect("http://" . <URLOriginalComBaseNoEncurtador>);
 ~~~
-
